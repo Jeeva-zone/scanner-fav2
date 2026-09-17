@@ -48,6 +48,11 @@ jobs:
           path: release-artifacts/
           retention-days: 30
 
+      - name: Run unit tests
+        # Non-blocking: reports regressions without holding back the APK publish.
+        continue-on-error: true
+        run: ./gradlew testDebugUnitTest --no-daemon
+
       - name: Create / Update GitHub Release
         if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2

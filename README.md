@@ -54,6 +54,21 @@ publishes both APKs to the [`latest`](https://github.com/Jeeva-zone/scanner-fav2
 
 ---
 
+## Result card colours
+
+The result card colour-codes every outcome so a list of hosts can be scanned at a glance.
+
+| Colour | Meaning | Applies to |
+| --- | --- | --- |
+| Green | The host answered and returned one of the expected codes | `200`, `301`, `400`, `403` |
+| Orange | The host answered, but with something else | every other code — `404`, `500`, `302`, `429`, … |
+| Red | No response at all — the host is unreachable, timed out, or dead | timeout, DNS failure, connection refused, reset, SSL error |
+
+The same rule drives the status pill, the large status code, the latency readout, the
+favicon badge and the cloud scan results list.
+
+---
+
 ## 🛠️ Building from Source
 
 ### Prerequisites

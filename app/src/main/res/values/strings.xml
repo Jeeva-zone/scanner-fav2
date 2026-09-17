@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">StatusPing By Sivd</string>
+    <string name="app_subtitle">HTTP response checker</string>
+    <string name="input_label">IP address or URL</string>
+    <string name="input_placeholder">192.168.1.1 or example.com</string>
+    <string name="clear_input_desc">Clear input</string>
+    <string name="check_status_button">Check status</string>
+    <string name="checking_status_button">Checking…</string>
+    <string name="idle_hint">Enter an address and tap Check status.</string>
+    
+    <!-- Error messages -->
+    <string name="error_invalid_input">Enter a valid IP address or URL (e.g. 192.168.1.1 or example.com)</string>
+    <string name="error_no_connection">No network connection — check Wi-Fi or mobile data</string>
+    <string name="error_dns_failure">Host not found — check the address spelling</string>
+    <string name="error_connection_refused">Connection refused — nothing is listening on that port</string>
+    <string name="error_timeout">Timed out — the host didn\'t respond in 8 seconds</string>
+    <string name="error_ssl">Secure connection failed — TLS/SSL error</string>
+    <string name="error_connection_reset">Connection interrupted before a status was returned</string>
+    <string name="error_unknown">Could not retrieve a status code: %1$s</string>
+    
+    <!-- Result details -->
+    <string name="redirect_single">Redirected 1 time → %1$s</string>
+    <string name="redirect_multiple">Redirected %1$d times → %2$s</string>
+    <string name="latency_format">%1$d ms</string>
+    
+    <!-- Favicon check strings -->
+    <string name="favicon_check_title">Favicon Status (/favicon.ico)</string>
+    <string name="favicon_checking">Checking /favicon.ico…</string>
+
+    <!-- Cloud search strings -->
+    <string name="cloud_search_button">Cloud search</string>
+    <string name="scanning_cloud_button">Scanning…</string>
+    <string name="manual_update_button">Manual update</string>
+    <string name="updating_source">Updating…</string>
+    <string name="source_loaded">Source loaded</string>
+    <string name="http_scan_label">HTTP scan</string>
+    <string name="favicon_scan_label">Favicon scan</string>
+    <string name="cloud_results_title">Cloud Search Results</string>
+    <string name="stop_scan">Stop</string>
+    <string name="select_at_least_one">Select at least HTTP or Favicon scan</string>
+</resources>

@@ -1,0 +1,70 @@
+name: Build & Release Android APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Prepare APK Artifact
+        run: |
+          mkdir -p release-artifacts
+          cp app/build/outputs/apk/debug/app-debug.apk release-artifacts/StatusPing-v1.0.apk
+
+      - name: Upload APK as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: StatusPing-APK
+          path: release-artifacts/StatusPing-v1.0.apk
+          retention-days: 30
+
+      - name: Create / Update GitHub Release
+        if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'latest' }}
+          name: ${{ startsWith(github.ref, 'refs/tags/') && format('StatusPing {0}', github.ref_name) || 'StatusPing Latest Release' }}
+          body: |
+            ## 📱 StatusPing Android Application
+
+            Download the ready-to-install Android APK below:
+            - **[StatusPing-v1.0.apk](https://github.com/${{ github.repository }}/releases/download/${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'latest' }}/StatusPing-v1.0.apk)**
+
+            ### Features:
+            - Instant HTTP/HTTPS URL status check with latency & redirect tracking
+            - Automatic `/favicon.ico` endpoint verification
+            - Cloud search scanner with cached IP lists and automatic updates
+            - Material 3 dynamic color and dark mode support
+          files: release-artifacts/StatusPing-v1.0.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

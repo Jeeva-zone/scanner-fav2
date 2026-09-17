@@ -2,5 +2,7 @@
   "name": "StatusPing By Sivd",
   "description": "HTTP response status code checker and network diagnostic utility",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

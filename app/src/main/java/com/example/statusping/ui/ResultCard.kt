@@ -392,7 +392,8 @@ private fun ErrorResultCard(
     error: CheckState.Error,
     isDarkTheme: Boolean
 ) {
-    val neutralCodeColor = if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF64748B)
+    // No status code was obtained (timeout / unreachable / dead) - render it in red.
+    val unreachableColor = HttpReasons.getUnreachableColor(isDarkTheme)
     val errorBorderColor = if (isDarkTheme) Color(0xFFEF4444).copy(alpha = 0.5f) else Color(0xFFDC2626).copy(alpha = 0.4f)
     val containerColor = if (isDarkTheme) Color(0xFF1E293B) else Color(0xFFFEF2F2)
 
@@ -410,11 +411,12 @@ private fun ErrorResultCard(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Big neutral "—" per FR-6: "shows a neutral —, making it visually obvious that no status code was obtained"
+            // Big "—" marking that no status code was obtained; red because the host
+            // never answered (timeout / unreachable / dead).
             Text(
                 text = "—",
                 style = MaterialTheme.typography.displayLarge,
-                color = neutralCodeColor,
+                color = unreachableColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.testTag("status_code_text")
             )
@@ -428,7 +430,7 @@ private fun ErrorResultCard(
                 Icon(
                     imageVector = Icons.Default.Warning,
                     contentDescription = null,
-                    tint = if (isDarkTheme) Color(0xFFF87171) else Color(0xFFB91C1C),
+                    tint = unreachableColor,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.size(8.dp))
@@ -436,7 +438,7 @@ private fun ErrorResultCard(
                     text = error.detail,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = unreachableColor,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.testTag("error_text")
                 )

@@ -94,26 +94,43 @@ object HttpReasons {
         }
     }
 
-    // Colors matching spec: 2xx green · 3xx blue · 4xx amber · 5xx red · anything else neutral grey
-    // Colors tuned for strong contrast in both light and dark themes
+    /**
+     * Status codes that count as a "good" answer: the host replied and the result is
+     * one of the expected outcomes. Everything else that produced a response is orange.
+     */
+    private val GOOD_CODES = setOf(200, 301, 400, 403)
+
+    private fun isGoodCode(code: Int): Boolean = code in GOOD_CODES
+
+    /**
+     * Colour policy:
+     *  - 200, 301, 400, 403 -> green  (host reachable, expected outcome)
+     *  - any other HTTP code -> orange (responded, but not what we were hoping for)
+     *  - no response at all (timeout / unreachable / dead) -> red, via getUnreachableColor(),
+     *    because those never reach this helper - they surface as CheckState.Error instead.
+     * Colours are tuned for strong contrast in both light and dark themes.
+     */
     fun getStatusColor(code: Int, isDarkTheme: Boolean): Color {
-        return when (code / 100) {
-            2 -> if (isDarkTheme) Color(0xFF4ADE80) else Color(0xFF15803D) // Green
-            3 -> if (isDarkTheme) Color(0xFF60A5FA) else Color(0xFF1D4ED8) // Blue
-            4 -> if (isDarkTheme) Color(0xFFFBBF24) else Color(0xFFB45309) // Amber
-            5 -> if (isDarkTheme) Color(0xFFF87171) else Color(0xFFB91C1C) // Red
-            else -> if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF475569) // Neutral grey
+        return if (isGoodCode(code)) {
+            if (isDarkTheme) Color(0xFF4ADE80) else Color(0xFF15803D) // Green
+        } else {
+            if (isDarkTheme) Color(0xFFFB923C) else Color(0xFFC2410C) // Orange
         }
     }
 
     fun getStatusContainerColor(code: Int, isDarkTheme: Boolean): Color {
-        return when (code / 100) {
-            2 -> if (isDarkTheme) Color(0xFF064E3B).copy(alpha = 0.4f) else Color(0xFFDCFCE7)
-            3 -> if (isDarkTheme) Color(0xFF1E3A8A).copy(alpha = 0.4f) else Color(0xFFDBEAFE)
-            4 -> if (isDarkTheme) Color(0xFF78350F).copy(alpha = 0.4f) else Color(0xFFFEF3C7)
-            5 -> if (isDarkTheme) Color(0xFF7F1D1D).copy(alpha = 0.4f) else Color(0xFFFEE2E2)
-            else -> if (isDarkTheme) Color(0xFF1E293B).copy(alpha = 0.5f) else Color(0xFFF1F5F9)
+        return if (isGoodCode(code)) {
+            if (isDarkTheme) Color(0xFF064E3B).copy(alpha = 0.4f) else Color(0xFFDCFCE7)
+        } else {
+            if (isDarkTheme) Color(0xFF7C2D12).copy(alpha = 0.4f) else Color(0xFFFFEDD5)
         }
+    }
+
+    /**
+     * Red used for targets that never answered: timed out, unreachable or dead.
+     */
+    fun getUnreachableColor(isDarkTheme: Boolean): Color {
+        return if (isDarkTheme) Color(0xFFF87171) else Color(0xFFB91C1C)
     }
 
     fun getFormattedStatus(code: Int, reason: String): String {
